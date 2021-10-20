@@ -14,9 +14,9 @@ public class TrackScript : MonoBehaviour
 
     public CarScript[] carData = new CarScript[100];
 
-    // general functions
-    public float probability = 100;
+    public float[] probabilities = new float[100];
 
+    // general functions
     public float bestEverCarScore = 0;
 
     public float bestGenCarScore = 0;
@@ -34,7 +34,6 @@ public class TrackScript : MonoBehaviour
     public void startGeneration()
     {
         generationNumber++;
-        probability *= 0.9f;
 
         for (int i = 0; i < numberOfCars; i++)
         {
@@ -80,20 +79,29 @@ public class TrackScript : MonoBehaviour
     private void loadNewData()
     {
         int bestCarIndex = bestScoreCar();
-        if (bestGenCarScore > bestEverCarScore)
+
+        for (int i = 0; i < probabilities.Length; i++)
         {
-            for (
-                int i = 0;
-                i < carData[bestCarIndex].carSpeedHistory.Length;
-                i++
-            )
+            if (bestGenCarScore > bestEverCarScore)
             {
                 aiSpeed[i] = carData[bestCarIndex].carSpeedHistory[i];
                 aiRotation[i] = carData[bestCarIndex].carRotationHistory[i];
             }
+            if (aiSpeed[i] == 0 || probabilities[i] == 0)
+            {
+                probabilities[i] = 100;
+            }
+            else
+            {
+                probabilities[i] *= 0.9f;
+            }
+        }
 
+        if (bestGenCarScore > bestEverCarScore)
+        {
             bestEverCarScore = bestGenCarScore;
         }
+
         bestGenCarScore = 0;
     }
 

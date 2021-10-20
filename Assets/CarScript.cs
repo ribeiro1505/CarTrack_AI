@@ -17,9 +17,9 @@ public class CarScript : MonoBehaviour
 
     public float rotation;
 
-    public float[] carSpeedHistory = new float[999];
+    public float[] carSpeedHistory = new float[100];
 
-    public float[] carRotationHistory = new float[999];
+    public float[] carRotationHistory = new float[100];
 
     private float car_distance;
 
@@ -53,7 +53,8 @@ public class CarScript : MonoBehaviour
                 //generate speed
                 if (
                     trackScript.aiSpeed[carXaxis] == 0 ||
-                    Random.Range(0.00f, 100.00f) < trackScript.probability
+                    Random.Range(0.00f, 100.00f) <
+                    trackScript.probabilities[carXaxis]
                 )
                     speed = Random.Range(2.0f, 10.0f);
                 else
@@ -69,7 +70,8 @@ public class CarScript : MonoBehaviour
                 //generate rotation
                 if (
                     trackScript.aiRotation[carXaxis] == 0 ||
-                    Random.Range(0.00f, 100.00f) < trackScript.probability
+                    Random.Range(0.00f, 100.00f) <
+                    trackScript.probabilities[carXaxis]
                 )
                     rotation = Random.Range(-180.0f, 180.0f);
                 else
