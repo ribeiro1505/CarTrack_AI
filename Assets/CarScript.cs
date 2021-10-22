@@ -61,8 +61,10 @@ public class CarScript : MonoBehaviour
                 {
                     speed =
                         Random
-                            .Range(trackScript.aiSpeed[carXaxis] - 2,
-                            trackScript.aiSpeed[carXaxis] + 2);
+                            .Range(trackScript.aiSpeed[carXaxis] -
+                            (2 * trackScript.probabilities[carXaxis] / 100),
+                            trackScript.aiSpeed[carXaxis] +
+                            (2 * trackScript.probabilities[carXaxis] / 100));
                     if (speed > 10.0f) speed = 10.0f;
                 }
                 carSpeedHistory[carXaxis] = (speed);
@@ -77,8 +79,10 @@ public class CarScript : MonoBehaviour
                 else
                     rotation =
                         Random
-                            .Range(trackScript.aiRotation[carXaxis] - 20,
-                            trackScript.aiRotation[carXaxis] + 20);
+                            .Range(trackScript.aiRotation[carXaxis] -
+                            (60 * trackScript.probabilities[carXaxis] / 100),
+                            trackScript.aiRotation[carXaxis] +
+                            (60 * trackScript.probabilities[carXaxis] / 100));
                 carRotationHistory[carXaxis] = (rotation);
 
                 transform.eulerAngles = Vector3.forward * rotation;

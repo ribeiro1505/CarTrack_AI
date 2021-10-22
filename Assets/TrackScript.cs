@@ -93,7 +93,7 @@ public class TrackScript : MonoBehaviour
             }
             else
             {
-                probabilities[i] *= 0.9f;
+                probabilities[i] *= 0.99f;
             }
         }
 
