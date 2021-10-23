@@ -21,19 +21,45 @@ public class TrackScript : MonoBehaviour
 
     public float bestGenCarScore = 0;
 
-    public float[] aiSpeed = new float[999];
+    public float[] aiSpeed = new float[100];
 
-    public float[] aiRotation = new float[999];
+    public float[] aiRotation = new float[100];
 
     void Start()
     {
-        generationNumber = 0;
+        //resetPreviousFiles();
+        loadPreviousFiles();
         startGeneration();
+    }
+
+    public void resetPreviousFiles()
+    {
+        PlayerPrefs.SetFloat("Generation", 0);
+        PlayerPrefs.SetFloat("bestEverCarScore", 0);
+        for (int i = 0; i < numberOfCars; i++)
+        {
+            PlayerPrefs.SetFloat("probabilities_" + i, 0);
+            PlayerPrefs.SetFloat("aiSpeed_" + i, 0);
+            PlayerPrefs.SetFloat("aiRotation_" + i, 0);
+        }
+    }
+
+    public void loadPreviousFiles()
+    {
+        generationNumber = PlayerPrefs.GetFloat("Generation", 0);
+        bestEverCarScore = PlayerPrefs.GetFloat("bestEverCarScore", 0);
+        for (int i = 0; i < numberOfCars; i++)
+        {
+            probabilities[i] = PlayerPrefs.GetFloat("probabilities_" + i, 0);
+            aiSpeed[i] = PlayerPrefs.GetFloat("aiSpeed_" + i, 0);
+            aiRotation[i] = PlayerPrefs.GetFloat("aiRotation_" + i, 0);
+        }
     }
 
     public void startGeneration()
     {
         generationNumber++;
+        PlayerPrefs.SetFloat("Generation", generationNumber);
 
         for (int i = 0; i < numberOfCars; i++)
         {
@@ -82,24 +108,32 @@ public class TrackScript : MonoBehaviour
 
         for (int i = 0; i < probabilities.Length; i++)
         {
-            if (bestGenCarScore > bestEverCarScore)
+            if (
+                bestGenCarScore > bestEverCarScore &&
+                carData[bestCarIndex].carSpeedHistory[i] != 0
+            )
             {
                 aiSpeed[i] = carData[bestCarIndex].carSpeedHistory[i];
+                PlayerPrefs.SetFloat("aiSpeed_" + i, aiSpeed[i]);
                 aiRotation[i] = carData[bestCarIndex].carRotationHistory[i];
+                PlayerPrefs.SetFloat("aiRotation_" + i, aiRotation[i]);
             }
+
             if (aiSpeed[i] == 0 || probabilities[i] == 0)
             {
                 probabilities[i] = 100;
             }
-            else
+            else if (carData[bestCarIndex].carSpeedHistory[i] != 0)
             {
                 probabilities[i] *= 0.99f;
+                PlayerPrefs.SetFloat("probabilities_" + i, probabilities[i]);
             }
         }
 
         if (bestGenCarScore > bestEverCarScore)
         {
             bestEverCarScore = bestGenCarScore;
+            PlayerPrefs.SetFloat("bestEverCarScore", bestEverCarScore);
         }
 
         bestGenCarScore = 0;
